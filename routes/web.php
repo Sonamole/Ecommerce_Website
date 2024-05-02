@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +18,22 @@ use App\Http\Controllers\AppController;
 
 Route::get('/',[AppController::class,'index'])->name('app.index');
 
-Auth::routes();
+Auth::routes();  //login, logout, registration, password reset
+// Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login'); Example of login route
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware('auth')->group(function(){
+
+    // Route::get('/my-account',[UserController::class,'index'])->name('user.index');
+    Route::get('/user',[UserController::class,'index'])->name('user.index');
+});
+
+Route::middleware('auth','auth.admin')->group(function(){
+    // AuthAdmin, is a custom middleware that you've created. It extends the functionality of the 'auth' middleware by
+    // adding an additional check to ensure that the authenticated user has admin privileges (utype equals 'ADM') before allowing
+    //  access to the routes within the group. If the authenticated user does not have admin privileges, it flushes
+    //   the session (log out) and redirects them to the login page.
+
+    Route::get('/admin',[AdminController::class,'index'])->name('admin.index');
+
+});

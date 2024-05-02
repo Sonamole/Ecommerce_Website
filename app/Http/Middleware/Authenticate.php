@@ -12,6 +12,10 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
+        // It ensures that the user is authenticated before allowing access to the routes within the group.
+        // If the user is not authenticated, it redirects them to the login page.
+        // Essentially, it ensures that only authenticated users can access the routes.
+
         return $request->expectsJson() ? null : route('login');
     }
 }

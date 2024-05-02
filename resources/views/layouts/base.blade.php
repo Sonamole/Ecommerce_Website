@@ -115,7 +115,7 @@
                         <div class="main-menu">
                             <div class="menu-left">
                                 <div class="brand-logo">
-                                    <a href="index.htm">
+                                    <a href="{{ route('app.index') }}">
                                         <img src="{{ asset('assets/images/logo.png') }}" class="h-logo img-fluid blur-up lazyload"
                                             alt="logo">
                                     </a>
@@ -176,19 +176,62 @@
                                     </li>
                                     <li class="onhover-dropdown">
                                         <div class="cart-media name-usr">
-                                            <i data-feather="user"></i>
+                                           @auth
+                                               <span>{{ Auth::user()->name }}</span>
+                                           @endauth <i data-feather="user"></i>
                                         </div>
                                         <div class="onhover-div profile-dropdown">
                                             <ul>
-                                                <li>
-                                                    <a href="login.html" class="d-block">Login</a>
-                                                </li>
-                                                <li>
-                                                    <a href="register.html" class="d-block">Register</a>
-                                                </li>
+                                                {{-- whether a given route exists.  --}}
+                                                @if(Route::has('login'))
+                                                {{-- checks if the user is authenticated --}}
+                                                @auth
+                                                {{-- checks if the authenticated user's 'utype' (user type) is 'ADM' --}}
+                                                    @if(Auth::user()->utype==='ADM')
+                                                    <li>
+                                                        <a href="{{ route('admin.index') }}" class="d-block">Admin Dashboard</a>  {{-- Dashboard --}}
+                                                    </li>
+                                                    @else
+                                                    <li>
+                                                        <a href="{{ route('user.index') }}" class="d-block">User Dashboard</a>  {{-- My Account --}}
+                                                    </li>
+                                                    @endif
+                                                    <li>
 
+ {{-- a href="{{ route('logout') }}": This attribute sets the link's destination URL to the logout route. It uses Laravel's route() function to generate the URL based on the route named 'logout'.
+onclick="event.preventDefault();document.getElementById('frmlogout').submit();": This JavaScript code is executed when the link is clicked. Here's what it does:
+event.preventDefault();: This prevents the default action of the link, which is to navigate to the URL specified in the href attribute. In other words, it stops the browser from immediately following the link.
+document.getElementById('frmlogout').submit();: This line finds the form element with the ID 'frmlogout' and submits it. It triggers the form submission programmatically.
+id="frmlogout": This attribute gives the form element a unique identifier 'frmlogout', which is later referenced in the JavaScript code to trigger its submission.
+action="{{ route('logout') }}": This attribute specifies the URL where the form data will be sent when the form is submitted. It uses Laravel's route() function to generate the URL for the logout route.
+method="POST": This attribute specifies the HTTP method to be used when submitting the form. In this case, it's set to 'POST', which is commonly used for actions that modify data on the server.
+@csrf: This Blade directive generates a hidden CSRF token field within the form. CSRF (Cross-Site Request Forgery) tokens help protect against malicious attacks by ensuring that the form submission originates from the correct site and not from a forged request. --}}
+
+
+                                                    <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('frmlogout').submit();" class="d-block">Logout</a>
+                                                    <form id="frmlogout" action="{{ route('logout') }}" method="POST">
+                                                        @csrf
+                                                    </form>
+                                                </li>
+                                                {{-- If the user is not authenticated, --}}
+                                                @else
+                                                <li>
+                                                    {{-- login page for users who are not authenticated. --}}
+                                                    <a href="{{ route('login') }}" class="d-block">Login</a>
+
+                                                    {{-- The login link you provided doesn't require a form submission because it's simply a link to the login page. Clicking on it will take the user to the login form --}}
+                                                </li>
+                                                <li>
+                                                    {{-- registration page for users who are not authenticated. --}}
+                                                    <a href="{{ route('register') }}" class="d-block">Register</a>
+                                                </li>
+                                                @endauth
+
+                                                @endif
                                             </ul>
                                         </div>
+
+
                                     </li>
                                 </ul>
                             </div>

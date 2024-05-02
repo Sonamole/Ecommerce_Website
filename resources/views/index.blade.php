@@ -44,7 +44,7 @@
 
     <div class="left-side-contain">
         <div class="banner-left">
-            <h4>Sale <span class="theme-color">35% Off</span></h4>
+            <h4>Sale by SOnare<span class="theme-color">35% Off</span></h4>
             <h1>New Latest <span>Dresses</span></h1>
             <p>BUY ONE GET ONE <span class="theme-color">FREE</span></p>
             <h2>$79.00 <span class="theme-color"><del>$65.00</del></span></h2>

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+use Illuminate\Foundation\Auth\AuthenticatesUsers; //Location->vendor/laravel/framework/src/Illuminate/Foundation/Auth
 
 class LoginController extends Controller
 {
@@ -20,12 +21,16 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+// The AuthenticatesUsers trait contains the showLoginForm() method among others, and when you use the use AuthenticatesUsers; statement in your LoginController, it effectively brings all the methods defined in that trait into the LoginController class.
+// So, even though you don't see the showLoginForm() method directly within the LoginController class, it's still available and functional because it's being inherited from the AuthenticatesUsers trait.
+
+
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
