@@ -107,7 +107,7 @@
                                 <h2 class="td-color">${{ $item->subtotal() }}</h2>
                             </td>
                             <td>
-                                <a href="javascript:void(0)">
+                                <a href="javascript:void(0)" onclick="removeItemFromCart('{{ $item->rowId }}')">
                                     <i class="fas fa-times"></i>
                                 </a>
                             </td>
@@ -122,7 +122,7 @@
                 <div class="row">
                     <div class="col-sm-7 col-5 order-1">
                         <div class="left-side-button text-end d-flex d-block justify-content-end">
-                            <a href="javascript:void(0)"
+                            <a href="javascript:void(0)" onclick="clearCart()"
                                 class="text-decoration-underline theme-color d-block text-capitalize">clear
                                 all items</a>
                         </div>
@@ -203,6 +203,18 @@
         <input type="hidden" id="rowId" name="rowId">
         <input type="hidden" id="quantity" name="quantity">
     </form>
+
+    <form id="removeFromCart" method="POST" action="{{ route('cart.remove') }}">
+        @csrf
+        @method('delete')
+        <input type="hidden" id="rowId_D" name="rowId">
+    </form>
+
+    <form id="clearCart" method="POST" action="{{ route('cart.clear') }}">
+        @csrf
+        @method('delete')
+
+    </form>
 @endsection
 
 @push('scripts')
@@ -214,9 +226,19 @@
       $('#quantity').val($(qty).val());//This line sets the value of the hidden input field with the ID "quantity" to the value entered by the user in the input field passed as "qty".
       $('#updateCartQty').submit();//This line submits the form with the ID "updateCartQty", triggering the form submission to update the cart with the new quantity.
    }
+
+   function removeItemFromCart(rowId){
+       $('#rowId_D').val(rowId);
+       $('#removeFromCart').submit();
+   }
+
+   function clearCart(){
+      $('#clearCart').submit();
+   }
 </script>
 
-{{-- update cart quantity flow --}}
+@endpush
+{{-- update cart quantity flow ->  function updateQuantity(qty)--}}
 {{-- HTML Form Submission:
 The HTML form is rendered with hidden input fields for "rowId" and "quantity".
 When a user changes the quantity of an item using the input field, the updateQuantity() JavaScript function is triggered.
@@ -231,7 +253,4 @@ The method receives the request object, which contains the updated "rowId" and "
 It uses the Laravel Cart facade (Cart::instance('cart')->update(...)) to update the quantity of the item in the shopping cart based on the provided "rowId" and "quantity".
 After updating the cart, it redirects the user to the 'cart.index' route, likely to display the updated cart contents.
 So, in summary, when a user changes the quantity of an item in the cart, the JavaScript function updates hidden input fields with the new quantity and the item's identifier, then submits the form. The server-side controller method processes this form submission, updates the cart accordingly, and redirects the user back to the cart page.
-
  --}}
-
-@endpush
