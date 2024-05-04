@@ -204,25 +204,34 @@
                                 </div>
 
                                 <div class="product-buttons">
-                                    <a href="javascript:void(0)" class="btn btn-solid">
+                                    <a href="javascript:void(0)" class="btn btn-solid" onclick="event.preventDefault();document.getElementById('addtocart').submit()">
                                         <i class="fa fa-bookmark fz-16 me-2"></i>
-                                        <span>Wishlist</span>
+                                        <h6>Wishlist</h6>
                                     </a>
-                                    <a href="javascript:void(0)"
-                                        id="cartEffect" class="btn btn-solid hover-solid btn-animation">
+
+                                    {{-- This prevents the default action of the link, which is to navigate to the URL specified in the href attribute and submits a form with the id addtocart when the link is clicked.  --}}
+                                    <a href="javascript:void(0)"  onclick="event.preventDefault();document.getElementById('addtocart').submit();" id="cartEffect" class="btn btn-solid hover-solid btn-animation">
                                         <i class="fa fa-shopping-cart"></i>
-                                        <span>Add To Cart</span>
-                                        <form id="addtocart" method="post"
-                                            action="http://localhost:8000/cart/store">
-                                            <input type="hidden" name="_token"
-                                                value="MkRqEzTGuoSx6LqJUm0OAKxSgNUYt26wTT7RMUZY"> <input
-                                                type="hidden" name="id" value="1">
-                                            <input type="hidden" name="name"
-                                                value="Autem Repudiandae Accusantium Blanditiis">
-                                            <input type="hidden" name="price" value="13">
+                                        <h6>Add To Cart</h6>
+                                        <form id="addtocart" method="post" action="{{route('cart.store',$product->id)}}">
+                                            @csrf
+                                            {{-- <input type="hidden" name="id" value="{{$product->id}}"> --}}
+                                            {{-- The product ID is essential for identifying the specific product that the user wants to add to their cart. By including it in a hidden input field within the form, it gets submitted along with other form data when the form is submitted.
+Server-side Processing: When the form is submitted, the server-side script (likely written in PHP in this case, given the Laravel context) can access the product ID from the submitted form data. This allows the server to process the request and perform actions such as adding the specified product to the user's shopping cart or processing the order. --}}
                                             <input type="hidden" name="quantity" id="qty" value="1">
                                         </form>
                                     </a>
+
+{{-- Both code snippets accomplish the same task, the second code snippet with the submit button inside the form may provide a slightly better user experience and improved code organization.  --}}
+{{-- In the first code snippet (using an anchor tag with JavaScript submission), clicking the "Add To Cart" button may not visually indicate to the user that a form is being submitted. There might be a slight delay or lack of feedback before the action completes.
+In the second code snippet (using a submit button inside the form), clicking the "submit" button gives a more immediate visual feedback to the user that their action is being processed, as the button changes state (e.g., pressed down) during the submission process. --}}
+
+                                    {{-- <form id="addtocart" method="post" action="{{route('cart.store')}}">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$product->id}}">
+                                        <input type="hidden" name="quantity" id="qty" value="1">
+                                        <button type="submit">Add to Cart</button>
+                                    </form> --}}
 
 
 
