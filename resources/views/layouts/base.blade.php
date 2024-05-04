@@ -170,11 +170,15 @@
                                                 <i data-feather="shopping-cart"></i>
                                                 <span id="cart-count" class="label label-theme rounded-pill">
                                                     {{Cart::instance('cart')->content()->count()}}
+{{--
+Cart::instance('cart'): This is a call to Laravel's Cart facade, which is likely part of a shopping cart package or functionality you've implemented in your Laravel application. The instance('cart') method is used to specify which instance of the cart you want to work with. It's common to have multiple instances of a cart in an application, such as a regular cart and a wishlist.
+->content(): This method retrieves the content of the specified cart instance. This likely returns a collection of items currently in the cart.
+->count(): This method is then called on the collection returned by content() to count the number of items in the cart. --}}
                                                 </span>
                                             </a>
                                         </div>
                                     </li>
-    
+
                                     <li class="onhover-dropdown">
                                         <div class="cart-media name-usr">
                                            @auth

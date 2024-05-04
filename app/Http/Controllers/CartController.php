@@ -29,8 +29,22 @@ class CartController extends Controller
         return redirect()->back()->with('message','Success ! Item has been added successfully!');
     }
 
+    public function updateCart(Request $request){
+
+        Cart::instance('cart')->update($request->rowId,$request->quantity);
+
+    // Inside the method, it's using Laravel's Cart facade (presumably from a package like Laravel Shopping Cart) to update the cart. It's updating the item with the specified row ID ($request->rowId) to the new quantity provided ($request->quantity). The instance('cart') method is likely used to specify a particular instance of the cart.
+        return redirect()->route('cart.index');
+
+    }
+
    
 }
+
+
+
+///vendor\hardevine\shoppincart has  all the functions writen(migrations,contracts,facades,exceptions,service provider).CHeck it
+
 
 //In Laravel 10, a Cart instance is an object that represents an e-commerce shopping cart.
 // It provides methods to add items to the cart, remove items from the cart, update the quantity of items,

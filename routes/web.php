@@ -23,6 +23,7 @@ Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
 Route::get('/product/{slug}',[ShopController::class,'productDetails'])->name('shop.product.details');
 Route::get('/cart',[CartController::class,'index'])->name('cart.index');
 Route::post('/cart/store/{id}', [CartController::class, 'addToCart'])->name('cart.store');
+Route::put('/cart/update',[CartController::class,'updateCart'])->name('cart.update');
 
 Auth::routes();  //login, logout, registration, password reset
 // Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login'); Example of login route

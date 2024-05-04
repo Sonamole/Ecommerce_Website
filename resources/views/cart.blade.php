@@ -1,6 +1,6 @@
 @extends('layouts.base')
 @section('content')
-{{-- Add hardevine/shoppingcart package from online--}}
+{{-- Add hardevine/shoppingcart package from online and stored on vendor\hardvine\shoppingcart--}}
 
 <section class="breadcrumb-section section-b-space" style="padding-top:20px;padding-bottom:20px;">
     <ul class="circles">
@@ -95,9 +95,12 @@
                                 <div class="qty-box">
                                     <div class="input-group">
                                         <input type="number" name="quantity"
-                                            data-rowid="ba02b0dddb000b25445168300c65386d"
+                                            data-rowid="{{ $item->rowId }}" onchange="updateQuantity(this)"
                                             class="form-control input-number" value="{{ $item->qty }}">
                                     </div>
+
+{{-- onchange="updateQuantity(this)": This is an event handler that triggers a JavaScript function named "updateQuantity" when the value of the input field changes. The this keyword refers to the input field itself .Whenever the user change value something into the quantity input field and then clicks outside of it or tabs away from it, the updateQuantity() function will be triggered--}}
+{{-- value="{{ $item->qty }}": This sets the initial value of the input field dynamically using server-side code (again, Laravel's Blade syntax). It appears to be pulling the quantity value associated with the current item. --}}
                                 </div>
                             </td>
                             <td>
@@ -168,6 +171,9 @@
                                         <h6>Total <span>{{ Cart::instance('cart')->total() }}</span></h6>
                                         {{-- calculates and displays the total cost, including both the subtotal and tax, of the items in the shopping cart --}}
                                     </div>
+
+
+                                    {{-- subtotal(),total(),tax() are all defined at vendor/hardvine\shoppingcart\src\cart.php --}}
                                     <div class="bottom-details">
                                         <a href="checkout">Process Checkout</a>
                                     </div>
@@ -191,4 +197,41 @@
         @endif
     </div>
 </section>
+    <form id="updateCartQty" method="post" action="{{ route('cart.update') }}">
+      @csrf
+      @method('put')
+        <input type="hidden" id="rowId" name="rowId">
+        <input type="hidden" id="quantity" name="quantity">
+    </form>
 @endsection
+
+@push('scripts')
+
+<script>
+   function updateQuantity(qty)
+   {
+      $('#rowId').val($(qty).data('rowid'));//This line sets the value of the hidden input field with the ID "rowId" to the value of the "rowid" data attribute of the input field passed as "qty".
+      $('#quantity').val($(qty).val());//This line sets the value of the hidden input field with the ID "quantity" to the value entered by the user in the input field passed as "qty".
+      $('#updateCartQty').submit();//This line submits the form with the ID "updateCartQty", triggering the form submission to update the cart with the new quantity.
+   }
+</script>
+
+{{-- update cart quantity flow --}}
+{{-- HTML Form Submission:
+The HTML form is rendered with hidden input fields for "rowId" and "quantity".
+When a user changes the quantity of an item using the input field, the updateQuantity() JavaScript function is triggered.
+JavaScript Function updateQuantity(qty):
+This function is called when the quantity input field is changed.
+It extracts the "rowid" attribute value from the input field and sets it as the value of the hidden input field with ID "rowId".
+It extracts the quantity value entered by the user and sets it as the value of the hidden input field with ID "quantity".
+Finally, it submits the form with the ID "updateCartQty", causing a POST request to be sent to the server.
+Controller Method updateCart(Request $request):
+When the form is submitted, it triggers the updateCart method in the controller.
+The method receives the request object, which contains the updated "rowId" and "quantity" values from the form.
+It uses the Laravel Cart facade (Cart::instance('cart')->update(...)) to update the quantity of the item in the shopping cart based on the provided "rowId" and "quantity".
+After updating the cart, it redirects the user to the 'cart.index' route, likely to display the updated cart contents.
+So, in summary, when a user changes the quantity of an item in the cart, the JavaScript function updates hidden input fields with the new quantity and the item's identifier, then submits the form. The server-side controller method processes this form submission, updates the cart accordingly, and redirects the user back to the cart page.
+
+ --}}
+
+@endpush
