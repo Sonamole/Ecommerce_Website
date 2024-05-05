@@ -414,10 +414,12 @@
                                 </div>
                                 <div class="dropdown select-featured">
                                     <select class="form-select" name="size" id="pagesize">
-                                        <option value="12" selected="">12 Products Per Page</option>
-                                        <option value="24">24 Products Per Page</option>
-                                        <option value="52">52 Products Per Page</option>
-                                        <option value="100">100 Products Per Page</option>
+                                        <option value="5" {{ $size == 5 ? 'selected':'' }}>5 Products Per Page</option>
+                                        <option value="12" {{ $size == 12 ? 'selected':'' }}>12 Products Per Page</option>
+                                        {{-- It checks if the variable $size is equal to 12. If it is, it adds the attribute selected to the <option> tag; otherwise, it adds nothing. --}}
+                                        <option value="24" {{ $size == 24 ? 'selected':'' }}>24 Products Per Page</option>
+                                        <option value="52" {{ $size == 52 ? 'selected': '' }}>52 Products Per Page</option>
+                                        <option value="100" {{ $size == 100 ? 'selected': '' }}>100 Products Per Page</option>
                                     </select>
                                 </div>
                             </div>
@@ -568,5 +570,54 @@ These links provide navigation options like "Previous Page" and "Next Page" to m
     </div>
 </section>
 
+<form id="frmFilter" method="GET">
+    <input type="hidden" name="page" id="page" value="{{ $page }}"/>
+    <input type="hidden" name="size" id="size" value="{{ $size }}"/>
+    {{-- This code defines a form with two hidden input fields (page and size). These fields are used to store the current page number and the selected number of products per page, respectively. The values of these fields are initially populated with the values of the $page and $size variables, presumably passed from the controller. --}}
+
+</form>
 
 @endsection
+
+@push('scripts')
+
+     <script>
+        $("#pagesize").on("change",function(){// It listens for the "change" event, which occurs when the user selects a different option from the dropdown.
+            $("#size").val($("#pagesize option:selected").val());//This line sets the value of another element with the ID "size" to the value of the selected option in the dropdown menu with the ID "pagesize". This is likely updating another hidden input field or form element with the selected value.
+            $("#frmFilter").submit();
+        })
+     </script>
+@endpush
+
+{{-- User Interaction: The user selects an option from the dropdown menu, indicating how many products they want to see per page.
+JavaScript Handling: When the user selects an option, the JavaScript code updates the hidden input field (size) in the form with the selected value and submits the form.
+Form Submission: The form is submitted to the server with the updated value of size.
+Controller Handling: The controller receives the form submission request, extracts the size parameter from the query string, and uses it to paginate the product query accordingly.
+Database Query: The controller queries the database for products, ordering them as required and paginating the results based on the selected size. However, the selected value itself is not stored in the database.
+Display: The controller sends the paginated product data to the view, which renders the products accordingly, displaying the desired number of products per page as determined by the user's selection.
+So, the selected value from the dropdown menu affects how the products are displayed on the current page, but it doesn't directly affect the data stored in the database.
+
+So, when the user initially loads the page, $size is a variable passed from the server-side controller to the view. The controller determines the default value for $size, typically based on some logic or default settings. For example, in the provided Laravel controller method:
+
+php
+Copy code
+$size = $request->query("size");
+if(!$size)
+    $size = 12;
+If there is no size parameter in the query string, $size is set to the default value of 12. This value is then passed to the view along with other data.
+
+When the page is rendered initially, the dropdown menu will show the option with value="12" as selected because of the Blade templating code:
+
+html
+Copy code
+<option value="12" {{ $size == 12 ? 'selected':'' }}>12 Products Per Page</option>
+Here, if $size is equal to 12, the selected attribute will be added to this <option> tag, making it selected by default.
+
+When the user selects a different option from the dropdown menu and submits the form through JavaScript, the new value of $size is not directly updated in the view. Instead, the form submission triggers a new HTTP request to the server, and the controller retrieves the updated value of size from the query parameters as shown in your controller method:
+
+php
+Copy code
+$size = $request->query("size");
+This updated value of $size is then used to fetch the corresponding number of products from the database, and the view is rendered again with the updated product list.
+
+In summary, $size is initially set by the server and passed to the view when the page is rendered. Subsequent changes to the selected size are handled by the server-side code in response to form submissions.--}}
