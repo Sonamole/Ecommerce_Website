@@ -68,163 +68,35 @@
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body category-scroll">
                                     <ul class="category-list">
+                                      @foreach ($brands as $brand)
+                                      <li>
+                                        <div class="form-check ps-0 custome-form-check">
+                                            {{-- id seems to be prefixed with "br" followed by the brand's ID. --}}
+                                            <input class="checkbox_animated check-it" id="br{{ $brand->id }}" name="brands"
+                                            @if(in_array($brand->id,explode(',',$q_brands))) checked="checked"
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br1" name="brands"
-                                                    value="1" type="checkbox">
-                                                <label class="form-check-label">Quis Et</label>
-                                                <p class="font-light">(1)</p>
-                                            </div>
-                                        </li>
+                                            {{-- explode(',',$q_brands): This part splits the string $q_brands into an array using the comma (,) as the delimiter. So, if $q_brands is something like "1,2,3", it will become ['1', '2', '3'].
+in_array($brand->id, explode(',',$q_brands)): Here, in_array() checks if the current brand's ID ($brand->id) exists in the array generated from $q_brands. If the brand's ID is found in the array, it returns true, indicating that the brand is selected.
+@if(in_array($brand->id,explode(',',$q_brands))) checked="checked" @endif: This is a Blade template conditional statement. If the condition in step 2 is true (meaning the brand is selected), it adds the checked="checked" attribute to the checkbox, making it appear checked by default.
+So, in simpler terms, this code checks if the current brand's ID is included in the list of selected brand IDs ($q_brands). If it is, the checkbox associated with that brand will be checked automatically when the page loads. Otherwise, it will remain unchecked.
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br2" name="brands"
-                                                    value="2" type="checkbox">
-                                                <label class="form-check-label">Aliquam Doloremque</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
+ --}}
+                                            @endif
+                                                value="{{ $brand->id }}" type="checkbox" onchange="filterProductsByBrand(this)">
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br3" name="brands"
-                                                    value="3" type="checkbox">
-                                                <label class="form-check-label">Sequi Repellendus</label>
-                                                <p class="font-light">(1)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br4" name="brands"
-                                                    value="4" type="checkbox">
-                                                <label class="form-check-label">Repellendus Quia</label>
-                                                <p class="font-light">(2)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br5" name="brands"
-                                                    value="5" type="checkbox">
-                                                <label class="form-check-label">Sint Iste</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br6" name="brands"
-                                                    value="6" type="checkbox">
-                                                <label class="form-check-label">Et Eos</label>
-                                                <p class="font-light">(6)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br7" name="brands"
-                                                    value="7" type="checkbox">
-                                                <label class="form-check-label">Vel Explicabo</label>
-                                                <p class="font-light">(2)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br8" name="brands"
-                                                    value="8" type="checkbox">
-                                                <label class="form-check-label">Ipsam Earum</label>
-                                                <p class="font-light">(4)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br9" name="brands"
-                                                    value="9" type="checkbox">
-                                                <label class="form-check-label">Sequi Reprehenderit</label>
-                                                <p class="font-light">(5)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="br10" name="brands"
-                                                    value="10" type="checkbox">
-                                                <label class="form-check-label">Sunt Corrupti</label>
-                                                <p class="font-light">(3)</p>
-                                            </div>
-                                        </li>
+                                                {{-- onchange="filterProductsByBrand(this)": This specifies a JavaScript function (filterProductsByBrand()) to be executed when the checkbox's state changes. The this keyword passes a reference to the checkbox element to the function. --}}
+                                            <label class="form-check-label">{{ $brand->name }}</label>
+                                            <p class="font-light">( {{ $brand->products->count() }})</p>
+                                        </div>
+                                    </li>
+                                      @endforeach
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accordion-item category-color">
-                            <h2 class="accordion-header" id="headingThree">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseThree">
-                                    Color
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse show"
-                                aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="category-list">
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">
-                                                <i class="fas fa-check"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="accordion-item category-price">
+                        {{-- <div class="accordion-item category-price">
                             <h2 class="accordion-header" id="headingFour">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapseFour">Price</button>
@@ -237,42 +109,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
-                        <div class="accordion-item category-price">
-                            <h2 class="accordion-header" id="headingFive">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseFive">
-                                    Size
-                                </button>
-                            </h2>
 
-                            <div id="collapseFive" class="accordion-collapse collapse show"
-                                aria-labelledby="headingFive" data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="category-list">
-                                        <li>
-                                            <a href="javascript:void(0)">xs</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">sm</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">md</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">lg</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">xl</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">xxl</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="accordion-item category-rating">
                             <h2 class="accordion-header" id="headingOne">
@@ -286,59 +125,8 @@
                                 <div class="accordion-body category-scroll">
                                     <ul class="category-list">
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct1" name="categories"
-                                                    type="checkbox" value="1">
-                                                <label class="form-check-label">Qui Ut</label>
-                                                <p class="font-light">(7)</p>
-                                            </div>
-                                        </li>
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct2" name="categories"
-                                                    type="checkbox" value="2">
-                                                <label class="form-check-label">Blanditiis Error</label>
-                                                <p class="font-light">(8)</p>
-                                            </div>
-                                        </li>
 
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct3" name="categories"
-                                                    type="checkbox" value="3">
-                                                <label class="form-check-label">Quam Quos</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct4" name="categories"
-                                                    type="checkbox" value="4">
-                                                <label class="form-check-label">Cupiditate Minus</label>
-                                                <p class="font-light">(5)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct5" name="categories"
-                                                    type="checkbox" value="5">
-                                                <label class="form-check-label">Dolores Et</label>
-                                                <p class="font-light">(4)</p>
-                                            </div>
-                                        </li>
-
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" id="ct6" name="categories"
-                                                    type="checkbox" value="6">
-                                                <label class="form-check-label">Quis Repudiandae</label>
-                                                <p class="font-light">(0)</p>
-                                            </div>
-                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -363,22 +151,8 @@
                                                     above</label>
                                             </div>
                                         </li>
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" type="checkbox"
-                                                    id="flexCheckDefault20">
-                                                <label class="form-check-label" for="flexCheckDefault20">10% and
-                                                    above</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-check ps-0 custome-form-check">
-                                                <input class="checkbox_animated check-it" type="checkbox"
-                                                    id="flexCheckDefault21">
-                                                <label class="form-check-label" for="flexCheckDefault21">20% and
-                                                    above</label>
-                                            </div>
-                                        </li>
+
+
                                     </ul>
                                 </div>
                             </div>
@@ -501,6 +275,7 @@
                                 <div class="rating-details">
 
                                     <span class="font-light grid-content">{{ $product->category->name }}</span>
+                                    <span class="font-light grid-content">{{ $product->brand->name }}</span>
                                     <ul class="rating mt-0">
                                         <li>
                                             <i class="fas fa-star theme-color"></i>
@@ -574,6 +349,8 @@ These links provide navigation options like "Previous Page" and "Next Page" to m
     <input type="hidden" name="page" id="page" value="{{ $page }}"/>
     <input type="hidden" name="size" id="size" value="{{ $size }}"/>
     <input type="hidden" name="order" id="order" value="{{ $order }}"/>
+    <input type="hidden" name="brands" id="brands" value="{{ $q_brands }}"/>
+
     {{-- This code defines a form with two hidden input fields (page and size). These fields are used to store the current page number and the selected number of products per page, respectively. The values of these fields are initially populated with the values of the $page and $size variables, presumably passed from the controller. --}}
 
 </form>
@@ -592,6 +369,28 @@ These links provide navigation options like "Previous Page" and "Next Page" to m
             $('#order').val($("#orderby option:selected" ).val());
             $("#frmFilter").submit();
         })
+
+        // function filterProductsByBrand(brands){
+        function filterProductsByBrand(){
+            var brands=""; //This initializes an empty string variable named brands. This variable will be used to store the IDs of the selected brands.
+            $("input[name='brands']:checked").each(function(){ //This jQuery selector targets all checked checkboxes with the name "brands". The .each() function iterates over each checked checkbox.
+                if(brands=="")                // This checks if the variable brands is empty. If it's empty, it means this is the first checkbox being processed.
+
+                {
+                    brands += this.value; //If brands is indeed empty, it assigns the value of the current checkbox to the brands variable. This effectively means brands now holds the value of the current checkbox.
+                }
+
+                else{//f brands is not empty, it means there are already some selected brands stored in it.
+                    brands +="," +this.value; // If there are already selected brands, this line appends a comma , followed by the value of the current checkbox to the existing brands string. This ensures that the value of the current checkbox is added to the existing list of selected brands, separated by commas.
+                }
+                $("#brands").val(brands);//This sets the value of the hidden input field with the id "brands" to the value stored in the brands variable. This effectively updates the hidden input field with the selected brand IDs.
+                $("#frmFilter").submit();
+            })
+
+        }
+
+
+        
      </script>
 @endpush
 

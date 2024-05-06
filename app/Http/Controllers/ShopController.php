@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
+use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -17,13 +19,15 @@ class ShopController extends Controller
         if(!$size)
             $size=12;
 
+ //   //if(!$page) $page = 1; and if(!$size) $size = 12;: These lines check if the "page" and "size" parameters are not present in the query string. If they are not present, it sets default values. Here, the default page number is 1 and the default number of products per page is 12.
+
         $order=$request->query('order');
 
         if(!$order)
             $order=-1;
 
-        // $o_coloumn="";
-        // $o_order="";
+        $o_coloumn="";
+        $o_order="";
 
         switch($order){
            case 1:
@@ -52,11 +56,25 @@ class ShopController extends Controller
                 break;
         }
 
+        $brands=Brand::orderBy("name",'ASC')->get(); //This line retrieves all brands from the database and orders them by their names in ascending order (ASC).
+        $q_brands=$request->query("brands");//$q_brands retrieves the value of the query parameter named "brands" from the incoming HTTP request. This parameter likely contains a comma-separated list of brand IDs selected by the user.
 
-       //if(!$page) $page = 1; and if(!$size) $size = 12;: These lines check if the "page" and "size" parameters are not present in the query string. If they are not present, it sets default values. Here, the default page number is 1 and the default number of products per page is 12.
 
-        $products=Product::orderBy('created_at','DESC')->orderBy($o_coloumn,$o_order)->paginate($size); // This method paginates the query results, meaning it splits the results into multiple pages to improve performance and user experience. The number 12 passed to the paginate() method specifies that each page should contain up to 12 products.
-        return view('shop',compact('products','page','size','order'));
+        //This part filters the products based on the selected brands. If $q_brands is not empty (meaning the user has selected some brands),
+        // it applies a whereIn clause to the query, filtering the products by their brand_id. It uses explode(',', $q_brands) to split the comma-separated list of brand IDs into an array.
+        //  This code uses Laravel's when method, which conditionally adds clauses to the query based on the truthiness of the first argument ($q_brands in this case).
+
+
+        $products = Product::when($q_brands, function ($query) use ($q_brands) {
+            $query->whereIn('brand_id', explode(',', $q_brands));
+        })
+
+        ->orderBy('created_at', 'DESC')
+        ->orderBy($o_coloumn, $o_order)
+        ->paginate($size);
+
+     // This method paginates the query results, meaning it splits the results into multiple pages to improve performance and user experience. The number 12 passed to the paginate() method specifies that each page should contain up to 12 products.
+        return view('shop',compact('products','page','size','order','brands','q_brands'));
     }
 
     public function productDetails($slug){
