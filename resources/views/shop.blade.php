@@ -125,7 +125,19 @@ So, in simpler terms, this code checks if the current brand's ID is included in 
                                 <div class="accordion-body category-scroll">
                                     <ul class="category-list">
 
+                                        @foreach ($categories as $category)
+                                        <li>
+                                            <div class="form-check ps-0 custome-form-check">
+                                                <input class="checkbox_animated check-it" id="ct{{$category->id}}" name="categories" type="checkbox"
+                                                 @if(in_array($category->id,explode(',',$q_categories))) checked="checked"
 
+                                                 @endif
+                                                  value="{{$category->id}}" onchange="filterProductsByCategory(this)">
+                                                <label class="form-check-label">{{$category->name}}</label>
+                                                <p class="font-light">({{$category->products->count()}})</p>
+                                            </div>
+                                        </li>
+                                    @endforeach
 
                                     </ul>
                                 </div>
@@ -350,7 +362,7 @@ These links provide navigation options like "Previous Page" and "Next Page" to m
     <input type="hidden" name="size" id="size" value="{{ $size }}"/>
     <input type="hidden" name="order" id="order" value="{{ $order }}"/>
     <input type="hidden" name="brands" id="brands" value="{{ $q_brands }}"/>
-
+    <input type="hidden" id="categories" name="categories" value="{{$q_categories}}" />
     {{-- This code defines a form with two hidden input fields (page and size). These fields are used to store the current page number and the selected number of products per page, respectively. The values of these fields are initially populated with the values of the $page and $size variables, presumably passed from the controller. --}}
 
 </form>
@@ -390,7 +402,20 @@ These links provide navigation options like "Previous Page" and "Next Page" to m
         }
 
 
-        
+        function filterProductsByCategory(){
+            var categories = "";
+            $("input[name='categories']:checked").each(function(){
+                if(categories=="")
+                {
+                    categories += this.value;
+                }
+                else{
+                    categories += "," + this.value;
+                }
+            });
+            $("#categories").val(categories);
+            $("#frmFilter").submit();
+        }
      </script>
 @endpush
 
